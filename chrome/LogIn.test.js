@@ -6,9 +6,24 @@ var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
-driver.get('http://stagingapp.wirkn.com');
-driver.findElement(By.name('email')).sendKeys('eric@tan.com');
-driver.findElement(By.name('password')).sendKeys('password');
-driver.findElement(By.name('commit')).click();
-driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-driver.quit();
+var expect = require('chai').expect;
+
+describe('test Manager Web Log In',function(){
+	before(function(done){
+		driver.get('http://stagingapp.wirkn.com');
+		done();
+	})
+	it('Give empty user password',function(){
+		driver.findElement(By.name('email')).sendKeys('eric@tan.com')
+		driver.findElement(By.name('commit')).click();
+		driver.getTitle()
+			.then(function(res){
+				console.log(res);
+				expect(res).to.be(51);
+			})			
+	})
+	
+})
+
+// driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+// driver.quit();

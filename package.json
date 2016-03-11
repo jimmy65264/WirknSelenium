@@ -1,0 +1,12 @@
+{
+	"name": "wirkn-selenium",
+	"version": "0.1.1",
+	"dependencies": {
+		"chai": "^3.4.1",
+		"mocha": "^2.2.5",
+		"selenium-webdriver": "2.52.0"
+	},
+	"scripts": {
+    "test": "mocha ./chrome/LogIn.test.js "
+  }
+}
