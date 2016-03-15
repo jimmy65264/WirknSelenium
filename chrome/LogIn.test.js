@@ -1,5 +1,4 @@
 var webdriver = require('selenium-webdriver'),
-	chrome = require('selenium-webdriver/chrome'),
     By = require('selenium-webdriver').By,
     until = require('selenium-webdriver').until,
     test = require('selenium-webdriver/testing'),
@@ -13,33 +12,66 @@ var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
-function goLogIn(cb){
+function goLogIn (cb) {
 	driver.manage().deleteAllCookies();
 	driver.get('http://stagingapp.wirkn.com');
-	cb();
+	if (cb) cb();
 } 
 
+function validLogIn (cb) {
+	driver.findElement(By.name('email')).sendKeys('eric@tan.com');
+	driver.findElement(By.name('password')).sendKeys('password');
+	driver.findElement(By.name('commit')).click();
+	if (cb) cb();
+}
+
+function invalidLogIn (cb) {
+	for(var index = 0;index< 100;index++){
+		driver.findElement(By.name('email')).sendKeys('eric@tan.com');
+		driver.findElement(By.name('password')).sendKeys('BadPassword' + index.toString());
+		driver.findElement(By.name('commit')).click();
+		if(cb) cb();
+	}
+}
+
+function goPostJob(cb) {
+	driver.findElement(By.xpath('//*[@id="navbar-collapse"]/ul[2]/li[1]/a/button')).click();
+	if (cb) cb();
+}
+
+
 describe('Manager Web Tests',function() {
+	this.timeout(30000);
 	before(function() {
 		driver.getWindowHandle();
 	})
-	after(function() {
-		driver.quit();
-	})
-	describe('LogIn Tests', function(){
-		this.timeout(30000);
-		test.it('should log in at valid credential', function (done) {
-			goLogIn (function () {
-				console.log('we are in');
-				driver.findElement(By.name('email')).sendKeys('eric@tan.com');
-				driver.findElement(By.name('password')).sendKeys('password');
-				driver.findElement(By.name('commit')).click();
-				expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
-				done();
-			})
+	
+	
+	// describe('LogIn Tests', function() {
+	// 	test.it('should log in at valid credential', function (done) {
+	// 		goLogIn (function () {
+	// 			validLogIn(function () {
+	// 				expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
+	// 				done();
+	// 			})
+	// 		})
+	// 	})
+	// })
+
+	describe('Test default homepage for Manger Web', function () {
+		before(function () {
+			this.timeout(30000);
+		})
+
+		test.it('go to post job',function (done) {
+			goLogIn();
+			validLogIn();
+				goPostJob(function () {
+					expect(driver.findElement(By.xpath('//*[@id=\"tab1\"]/div/div[2]/h3/span'))).to.eventually.equal('Welcome');
+					done();
+				})
 		})
 	})
-
 })
 	// test.it('should deny empty user password at log in',function (done) {
 	// 	goLogIn(function () {
