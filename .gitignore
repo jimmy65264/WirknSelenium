@@ -1,2 +1,2 @@
-#ignore chrome driver
-chrome/chromedriver
+#ignore node_modules
+node_modules
