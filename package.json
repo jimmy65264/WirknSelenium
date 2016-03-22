@@ -6,7 +6,9 @@
 		"mocha": "^2.2.5",
 		"selenium-webdriver": "2.52.0",
 		"chai-as-promised":"5.2.0 ",
-		"chromedriver": "2.21.2"
+		"chromedriver": "2.21.2",
+		"bluebird":"3.3.4",
+		"robotjs":"0.3.7"
 	},
 	"scripts": {
     "test": "mocha ./chrome/LogIn.test.js "

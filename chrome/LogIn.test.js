@@ -1,50 +1,130 @@
 var webdriver = require('selenium-webdriver'),
-    By = require('selenium-webdriver').By,
-    until = require('selenium-webdriver').until,
-    test = require('selenium-webdriver/testing'),
-    chai = require ('chai');
-    chai_p = require ('chai-as-promised');
+	By = require('selenium-webdriver').By,
+	until = require('selenium-webdriver').until,
+	test = require('selenium-webdriver/testing'),
+	chai = require ('chai');
+	chai_p = require ('chai-as-promised');
+	Promise = require("bluebird")
+	robot = require("robotjs");
 
-chai.use(chai_p);
-expect = chai.expect;
+	chai.use(chai_p);
+	expect = chai.expect;
 
 var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
-function goLogIn (cb) {
-	driver.manage().deleteAllCookies();
-	driver.get('http://stagingapp.wirkn.com');
-	if (cb) cb();
-} 
+    function testMsg (action) {
+    	console.log('		action includes:',action);
+    }
 
-function validLogIn (cb) {
-	driver.findElement(By.name('email')).sendKeys('eric@tan.com');
-	driver.findElement(By.name('password')).sendKeys('password');
-	driver.findElement(By.name('commit')).click();
-	if (cb) cb();
-}
+    function testWaitForXpath (path,ext) {
+    	if(ext){
+    		driver.wait(function () {
+    			return driver.isElementPresent(webdriver.By.xpath(path));
+			}, ext);
+    	}
+    	else{
+	    	driver.wait(function () {
+	    	return driver.isElementPresent(webdriver.By.xpath(path));
+			}, 2000);
+    	}
+    }
 
-function invalidLogIn (cb) {
-	for(var index = 0;index< 100;index++){
+	function testMethods () {
+	
+	testMethods.prototype.goLogIn = function (cb) {
+		testMsg('Go Log In page');
+		driver.manage().deleteAllCookies();
+		driver.get('http://stagingapp.wirkn.com')
+		driver.wait(until.elementLocated(By.name('commit')));
+		expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In')
+		if (cb) cb();
+	} 
+
+	testMethods.prototype.validLogIn = function (cb) {
+		testMsg('Log In');
+		driver.wait(until.elementLocated(By.name('commit')));
 		driver.findElement(By.name('email')).sendKeys('eric@tan.com');
-		driver.findElement(By.name('password')).sendKeys('BadPassword' + index.toString());
-		driver.findElement(By.name('commit')).click();
+		driver.findElement(By.name('password')).sendKeys('password');
+		driver.findElement(By.name('commit')).click()
+		expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
 		if(cb) cb();
 	}
+
+	testMethods.prototype.goPostJob = function (cb) {
+		testMsg('Go Post Job page');
+		testWaitForXpath('//*[@id="navbar-collapse"]/ul[2]/li[1]/a/button')
+		driver.findElement(By.xpath('//*[@id="navbar-collapse"]/ul[2]/li[1]/a/button')).click()
+		testWaitForXpath('//*[@id="business_name"]');
+		expect(driver.getTitle()).to.eventually.equal('Wirkn | New Job');
+		if (cb) cb();
+	}
+
+	testMethods.prototype.fillInValidEmployerInfo = function (cb) {
+		testMsg('Fill in Valid EmployerInfo');
+		testWaitForXpath('//*[@id="business_name"]');
+		driver.findElement(By.id('business_name')).sendKeys('Test Business');
+		driver.findElement(By.id('address')).sendKeys('7 Test Address');
+		driver.findElement(By.id('city')).sendKeys('Test City');
+		driver.findElement(By.id('province')).sendKeys('Test Province');
+		driver.findElement(By.id('postal_code')).sendKeys('Test Zip')
+		testWaitForXpath('//*[@id="next"]/a');
+		driver.findElement(By.xpath('//*[@id="next"]/a')).click();
+		testWaitForXpath('//*[@id="title"]');
+		expect(driver.findElement(By.xpath('//*[@id="tab2"]/div[1]/div[1]/h3')).getAttribute('innerText')).to.eventually.equal('Job Category');
+		if (cb)  cb();
+	}
+
+	testMethods.prototype.fillInValidJobDescription = function (cb) {
+		testMsg('Fill in Valid JobDescription');
+		testWaitForXpath('//*[@id="title"]')
+		driver.wait(until.elementLocated(By.id('title')));
+		driver.findElement(By.id('title')).sendKeys('Test Title');
+		driver.findElement(By.id('description')).sendKeys('Test Description');
+		testWaitForXpath('//*[@id="next"]/a');
+		driver.findElement(By.xpath('//*[@id="next"]/a')).click();
+		testWaitForXpath('//*[@id="tab3"]/div/div/div/div/div/span/label')
+		expect(driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/h2')).getAttribute('innerText')).to.eventually.equal('Please add an image to your job posting')
+		if (cb) cb();
+	}
+
+	testMethods.prototype.uploadValidPhoto = function (cb) {
+		//make sure you have the picture
+		testMsg('Upload a valid photo');
+		testWaitForXpath('//*[@id="tab3"]/div/div/div/div/div/span/label');
+		driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/div/div/span/label')).click();
+		driver.switchTo().frame(driver.findElement(By.id('filepicker_dialog')));
+		testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button',10000);
+		driver.findElement(By.xpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button')).click()
+		.then(function () {
+			robot.moveMouse(1000,300);
+			robot.mouseClick();
+			robot.typeString("bigsmall");
+			robot.keyTap('enter');
+		})
+		// testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]',10000);
+		if (cb) cb();
+	}
+
 }
 
-function goPostJob(cb) {
-	driver.findElement(By.xpath('//*[@id="navbar-collapse"]/ul[2]/li[1]/a/button')).click();
-	if (cb) cb();
-}
+var methods = new testMethods();
+
+methods = Promise.promisifyAll(Object.getPrototypeOf(methods));
 
 
-describe('Manager Web Tests',function() {
-	this.timeout(30000);
-	before(function() {
+
+test.describe('Manager Web Tests',function() {
+	before(function (done) {
 		driver.getWindowHandle();
+			driver.manage().window().setSize(2560,1440);
+		done();
 	})
+	after(function (done) {
+			//driver.quit();
+			done();
+		})
 	
 	
 	// describe('LogIn Tests', function() {
@@ -58,18 +138,17 @@ describe('Manager Web Tests',function() {
 	// 	})
 	// })
 
-	describe('Test default homepage for Manger Web', function () {
-		before(function () {
-			this.timeout(30000);
-		})
 
-		test.it('go to post job',function (done) {
-			goLogIn();
-			validLogIn();
-				goPostJob(function () {
-					expect(driver.findElement(By.xpath('//*[@id=\"tab1\"]/div/div[2]/h3/span'))).to.eventually.equal('Welcome');
-					done();
-				})
+
+	test.describe('Test action post a job', function () {
+		this.timeout(50000);
+		test.it('go to post a job',function (done) {
+				methods.goLogInAsync()
+				.then(methods.validLogInAsync())		
+				.then(methods.goPostJobAsync())
+				.then(methods.fillInValidEmployerInfoAsync())
+				.then(methods.fillInValidJobDescriptionAsync())
+				.then(methods.uploadValidPhotoAsync(done));
 		})
 	})
 })
