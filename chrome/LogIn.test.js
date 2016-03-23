@@ -6,6 +6,7 @@ var webdriver = require('selenium-webdriver'),
 	chai_p = require ('chai-as-promised');
 	Promise = require("bluebird")
 	robot = require("robotjs");
+	sleep = require("sleep");
 
 	chai.use(chai_p);
 	expect = chai.expect;
@@ -27,7 +28,7 @@ var driver = new webdriver.Builder()
     	else{
 	    	driver.wait(function () {
 	    	return driver.isElementPresent(webdriver.By.xpath(path));
-			}, 2000);
+			}, 4000);
     	}
     }
 
@@ -71,7 +72,7 @@ var driver = new webdriver.Builder()
 		driver.findElement(By.id('postal_code')).sendKeys('Test Zip')
 		testWaitForXpath('//*[@id="next"]/a');
 		driver.findElement(By.xpath('//*[@id="next"]/a')).click();
-		testWaitForXpath('//*[@id="title"]');
+		testWaitForXpath('//*[@id="tab2"]/div[1]/div[1]/h3');
 		expect(driver.findElement(By.xpath('//*[@id="tab2"]/div[1]/div[1]/h3')).getAttribute('innerText')).to.eventually.equal('Job Category');
 		if (cb)  cb();
 	}
@@ -84,8 +85,8 @@ var driver = new webdriver.Builder()
 		driver.findElement(By.id('description')).sendKeys('Test Description');
 		testWaitForXpath('//*[@id="next"]/a');
 		driver.findElement(By.xpath('//*[@id="next"]/a')).click();
-		testWaitForXpath('//*[@id="tab3"]/div/div/div/div/div/span/label')
-		expect(driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/h2')).getAttribute('innerText')).to.eventually.equal('Please add an image to your job posting')
+		testWaitForXpath('//*[@id="tab3"]/div/div/div/div/div/span/label') // choose file button
+		expect(driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/h2')).getAttribute('innerText')).to.eventually.equal('Please add an image to your job posting');
 		if (cb) cb();
 	}
 
@@ -93,20 +94,45 @@ var driver = new webdriver.Builder()
 		//make sure you have the picture
 		testMsg('Upload a valid photo');
 		testWaitForXpath('//*[@id="tab3"]/div/div/div/div/div/span/label');
-		driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/div/div/span/label')).click();
+		driver.findElement(By.xpath('//*[@id="tab3"]/div/div/div/div/div/span/label')).click()
 		driver.switchTo().frame(driver.findElement(By.id('filepicker_dialog')));
-		testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button',10000);
+		testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button',10000)
 		driver.findElement(By.xpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button')).click()
 		.then(function () {
-			robot.moveMouse(1000,300);
-			robot.mouseClick();
-			robot.typeString("bigsmall");
-			robot.keyTap('enter');
+			robot.moveMouse(1000,300);//go to download
+			robot.mouseClick();//click on download
+			robot.typeString("bigsmall");//enter file name
+			robot.keyTap('enter');//upload
+			sleep.sleep(5);
+			testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]');//save button
+			driver.findElement(By.xpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]')).click();
+			testWaitForXpath('//*[@id="cover_image"]');
+			testWaitForXpath('//*[@id="next"]/a',8000);
+			driver.findElement(By.xpath('//*[@id="next"]/a')).click();
+			testWaitForXpath('//*[@id="tab4"]/div/div[1]/h3');
+			testWaitForXpath('//*[@id="wizardForm"]/div/ul/li[3]/input',5000)//submit button
+			expect(driver.findElement(By.xpath('//*[@id="tab4"]/div/div[1]/h3')).getAttribute('innerText')).to.eventually.equal('Required Fields');
+			if (cb) cb();
 		})
-		// testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]',10000);
-		if (cb) cb();
 	}
 
+	testMethods.prototype.checkAllRequiredField = function (cb) {
+		testMsg('Check all required field');
+		testWaitForXpath('//*[@id="require_video"]');
+		driver.findElement(By.xpath('//*[@id="require_video"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_objective"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_education"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_message"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_phone_number"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_work_history"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_availabilities"]')).click();
+		driver.findElement(By.xpath('//*[@id="require_certifications"]')).click();
+		testWaitForXpath('//*[@id="wizardForm"]/div/ul/li[3]/input');
+		driver.findElement(By.xpath('//*[@id="wizardForm"]/div/ul/li[3]/input')).click();
+		// testWaitForXpath('//*[@id="main-wrapper"]/div/div/div/div[1]',40000);
+		// expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs');
+		if (cb) cb();
+	}
 }
 
 var methods = new testMethods();
@@ -141,14 +167,15 @@ test.describe('Manager Web Tests',function() {
 
 
 	test.describe('Test action post a job', function () {
-		this.timeout(50000);
+		this.timeout(90000);
 		test.it('go to post a job',function (done) {
 				methods.goLogInAsync()
 				.then(methods.validLogInAsync())		
 				.then(methods.goPostJobAsync())
 				.then(methods.fillInValidEmployerInfoAsync())
 				.then(methods.fillInValidJobDescriptionAsync())
-				.then(methods.uploadValidPhotoAsync(done));
+				.then(methods.uploadValidPhotoAsync())
+				.tehn(methods.checkAllRequiredField(done));
 		})
 	})
 })
