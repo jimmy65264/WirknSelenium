@@ -12,6 +12,6 @@
 		"sleep":"3.0.1"
 	},
 	"scripts": {
-    "test": "mocha ./chrome/LogIn.test.js "
+    "test": "mocha ./ManagerWeb/test.js "
   }
 }

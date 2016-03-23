@@ -1,0 +1,41 @@
+{
+	"xpath":{
+		"post_button":"//*[@id=\"navbar-collapse\"]/ul[2]/li[1]/a/button",
+		"post_job":{
+			"employer_info":{
+				"name":"//*[@id=\"business_name\"]",
+				"address":"//*[@id=\"address\"]",
+				"city":"//*[@id=\"city\"]",
+				"province":"//*[@id=\"province\"]",
+				"zip":"//*[@id=\"postal_code\"]",
+				"next":"//*[@id=\"next\"]/a"
+			},
+			"job_description":{
+				"info_text":"//*[@id=\"tab2\"]/div[1]/div[1]/h3",
+				"title":"//*[@id=\"title\"]",
+				"description":"//*[@id=\"description\"]",
+				"next":"//*[@id=\"next\"]/a"
+			},
+			"photo":{
+				"info_text":"//*[@id=\"tab3\"]/div/div/div/h2",
+				"choose_file":"//*[@id=\"tab3\"]/div/div/div/div/div/span/label",
+				"next":"//*[@id=\"next\"]/a"
+			},
+			"upload_frame":{
+
+				},
+			"required_fields":{
+				"info_text":"//*[@id=\"tab4\"]/div/div[1]/h3",
+				"video":"//*[@id=\"require_video\"]",
+				"note":"//*[@id=\"require_message\"]",
+				"objective":"//*[@id=\"require_objective\"]",
+				"number":"//*[@id=\"require_phone_number\"]",
+				"availabilities":"//*[@id=\"require_availabilities\"]",
+				"education":"//*[@id=\"require_education\"]",
+				"work_history":"//*[@id=\"require_work_history\"]",
+				"certifications":"//*[@id=\"require_certifications\"]",
+				"submit":"//*[@id=\"wizardForm\"]/div/ul/li[3]/input"
+			}
+		}
+	}
+}
