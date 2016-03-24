@@ -18,13 +18,28 @@ test.describe('Manager Web Tests',function() {
 		done();
 	})
 	after(function (done) {
-			driver.quit();
-			done();
-		})
+			driver.quit()
+			.then(function () {
+				done();
+			})
+	})
 
 	test.describe('Test action post a job', function () {
 		this.timeout(50000);
 		test.it('go to post a job',function (done) {
+				// methods.goLogIn(function () {
+				// 	methods.validLogIn(function () {
+				// 		methods.goPostJob(function () {
+				// 			methods.fillInValidEmployerInfo(function () {
+				// 				methods.fillInValidJobDescription(function () {
+				// 					methods.uploadValidPhoto(function () {
+				// 						methods.checkAllRequiredFied(done)
+				// 					})
+				// 				})
+				// 			})
+				// 		})
+				// 	})
+				// })
 				methods.goLogInAsync()
 				.then(methods.validLogInAsync())
 				.then(methods.goPostJobAsync())

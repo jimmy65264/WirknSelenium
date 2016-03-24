@@ -11,7 +11,7 @@
 				"next":"//*[@id=\"next\"]/a"
 			},
 			"job_description":{
-				"info_text":"//*[@id=\"tab2\"]/div[1]/div[1]/h3",
+				"info_text":"//*[@id=\"tab2\"]/div[1]/div[2]/div[1]/label",
 				"title":"//*[@id=\"title\"]",
 				"description":"//*[@id=\"description\"]",
 				"next":"//*[@id=\"next\"]/a"
@@ -22,12 +22,14 @@
 				"next":"//*[@id=\"next\"]/a"
 			},
 			"upload_frame":{
-
+				"frame":"//*[@id=\"filepicker_dialog\"]",
+				"choose_file":"//*[@id=\"ng-app\"]/body/div/div[2]/div[2]/div/section/div/div/button",
+				"save":"//*[@id=\"ng-app\"]/body/div/div[2]/div[2]/div/div[2]/button[2]"
 				},
 			"required_fields":{
 				"info_text":"//*[@id=\"tab4\"]/div/div[1]/h3",
 				"video":"//*[@id=\"require_video\"]",
-				"note":"//*[@id=\"require_message\"]",
+				"message":"//*[@id=\"require_message\"]",
 				"objective":"//*[@id=\"require_objective\"]",
 				"number":"//*[@id=\"require_phone_number\"]",
 				"availabilities":"//*[@id=\"require_availabilities\"]",

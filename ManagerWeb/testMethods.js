@@ -34,6 +34,10 @@ function testWaitForXpath (path,ext) {
 	}
 }
 
+function testWaitUntilXpath (path) {
+	driver.wait(until.elementLocated(By.xpath(path)));
+}
+
 function testMethods () {
 	
 	testMethods.prototype.goLogIn = function (cb) {
@@ -75,16 +79,18 @@ function testMethods () {
 		testWaitForXpath(xpath.post_job.employer_info.next);
 		driver.findElement(By.xpath(xpath.post_job.employer_info.next)).click();
 		testWaitForXpath(xpath.post_job.job_description.info_text);
-		expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Job Category');
+		expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Title or Position');
 		if (cb)  cb();
 	}
 
 	testMethods.prototype.fillInValidJobDescription = function (cb) {
 		testMsg('Fill in Valid JobDescription');
-		testWaitForXpath(xpath.post_job.job_description.title)
+		testWaitForXpath(xpath.post_job.job_description.info_text);
+		expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Title or Position');
+		testWaitForXpath(xpath.post_job.job_description.title);
 		driver.findElement(By.xpath(xpath.post_job.job_description.title)).sendKeys('Test Title');
 		driver.findElement(By.xpath(xpath.post_job.job_description.description)).sendKeys('Test Description');
-		testWaitForXpath(xpath.post_job.job_description.next);
+		testWaitUntilXpath(xpath.post_job.job_description.next);
 		driver.findElement(By.xpath(xpath.post_job.job_description.next)).click();
 		testWaitForXpath(xpath.post_job.photo.info_text) // choose file button
 		expect(driver.findElement(By.xpath(xpath.post_job.photo.info_text)).getAttribute('innerText')).to.eventually.equal('Please add an image to your job posting');
@@ -96,40 +102,40 @@ function testMethods () {
 		testMsg('Upload a valid photo');
 		testWaitForXpath(xpath.post_job.photo.choose_file);
 		driver.findElement(By.xpath(xpath.post_job.photo.choose_file)).click()
-		driver.switchTo().frame(driver.findElement(By.id('filepicker_dialog')));
-		testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button',10000)
-		driver.findElement(By.xpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/section/div/div/button')).click()
+		driver.switchTo().frame(driver.findElement(By.xpath(xpath.post_job.upload_frame.frame)));
+		testWaitForXpath(xpath.post_job.upload_frame.choose_file,10000)
+		driver.findElement(By.xpath(xpath.post_job.upload_frame.choose_file)).click()
 		.then(function () {
 			robot.moveMouse(1000,300);//go to download folder
 			robot.mouseClick();//click on download
 			robot.typeString("bigsmall");//enter file name
 			robot.keyTap('enter');//upload
 			sleep.sleep(5);
-			testWaitForXpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]');//save button
-			driver.findElement(By.xpath('//*[@id="ng-app"]/body/div/div[2]/div[2]/div/div[2]/button[2]')).click();
-			testWaitForXpath('//*[@id="cover_image"]');
-			testWaitForXpath('//*[@id="next"]/a',8000);
-			driver.findElement(By.xpath('//*[@id="next"]/a')).click();
-			testWaitForXpath('//*[@id="tab4"]/div/div[1]/h3');
+			testWaitForXpath(xpath.post_job.upload_frame.save,8000);//save button
+			driver.findElement(By.xpath(xpath.post_job.upload_frame.save)).click();
+			// testWaitForXpath('//*[@id="cover_image"]');
+			testWaitForXpath(xpath.post_job.photo.next,8000);
+			driver.findElement(By.xpath(xpath.post_job.photo.next)).click();
+			testWaitForXpath(xpath.post_job.required_fields.info_text);
 			testWaitForXpath('//*[@id="wizardForm"]/div/ul/li[3]/input',5000)//submit button
-			expect(driver.findElement(By.xpath('//*[@id="tab4"]/div/div[1]/h3')).getAttribute('innerText')).to.eventually.equal('Required Fields');
+			expect(driver.findElement(By.xpath(xpath.post_job.required_fields.info_text)).getAttribute('innerText')).to.eventually.equal('Required Fields');
 			if (cb) cb();
 		})
 	}
 
 	testMethods.prototype.checkAllRequiredField = function (cb) {
 		testMsg('Check all required field');
-		testWaitForXpath('//*[@id="require_video"]');
-		driver.findElement(By.xpath('//*[@id="require_video"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_objective"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_education"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_message"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_phone_number"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_work_history"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_availabilities"]')).click();
-		driver.findElement(By.xpath('//*[@id="require_certifications"]')).click();
-		testWaitForXpath('//*[@id="wizardForm"]/div/ul/li[3]/input');
-		driver.findElement(By.xpath('//*[@id="wizardForm"]/div/ul/li[3]/input')).click();
+		testWaitForXpath(xpath.post_job.required_fields.video);
+		driver.findElement(By.xpath(xpath.post_job.required_fields.video)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.objective)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.education)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.message)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.number)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.work_history)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.availabilities)).click();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.certifications)).click();
+		testWaitForXpath(xpath.post_job.required_fields.submit);
+		driver.findElement(By.xpath(xpath.post_job.required_fields.submit)).click();
 		// testWaitForXpath('//*[@id="main-wrapper"]/div/div/div/div[1]',40000);
 		// expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs');
 		if (cb) cb();
