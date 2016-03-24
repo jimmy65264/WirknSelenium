@@ -34,10 +34,6 @@ function testWaitForXpath (path,ext) {
 	}
 }
 
-function testWaitUntilXpath (path) {
-	driver.wait(until.elementLocated(By.xpath(path)));
-}
-
 function testMethods () {
 	
 	testMethods.prototype.goLogIn = function (cb) {
@@ -85,12 +81,10 @@ function testMethods () {
 
 	testMethods.prototype.fillInValidJobDescription = function (cb) {
 		testMsg('Fill in Valid JobDescription');
-		testWaitForXpath(xpath.post_job.job_description.info_text);
-		expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Title or Position');
 		testWaitForXpath(xpath.post_job.job_description.title);
 		driver.findElement(By.xpath(xpath.post_job.job_description.title)).sendKeys('Test Title');
 		driver.findElement(By.xpath(xpath.post_job.job_description.description)).sendKeys('Test Description');
-		testWaitUntilXpath(xpath.post_job.job_description.next);
+		testWaitForXpath(xpath.post_job.job_description.next);
 		driver.findElement(By.xpath(xpath.post_job.job_description.next)).click();
 		testWaitForXpath(xpath.post_job.photo.info_text) // choose file button
 		expect(driver.findElement(By.xpath(xpath.post_job.photo.info_text)).getAttribute('innerText')).to.eventually.equal('Please add an image to your job posting');
