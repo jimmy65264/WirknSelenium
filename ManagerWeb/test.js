@@ -52,7 +52,7 @@ test.describe('Manager Web Tests',function() {
 			methods.applicationsSortedByDate(done);
 		})
 	})
-	
+
 	test.describe('Test change application satus', function () {
 		this.timeout(10000);
 		test.it('should change application status to active', function (done) {
@@ -86,23 +86,33 @@ test.describe('Manager Web Tests',function() {
 			methods.changeAppStatus('hired',done);
 		})
 	})
+	
+	test.describe('Test job actions on My Jobs page',function () {
+		this.timeout(10000);
+		test.it('should go to MyJobs page', function (done) {
+			methods.goViewJobs(done);
+		})
+		test.it('should be able to go edit job',function (done) {
+			methods.editJob(done);
+		})
+	})
 
 	test.describe('Test action post a job', function () {
 		this.timeout(50000);
 		test.it('should click on post job button and go to post page',function (done) {
-			methods.goPostJob(done)
+			methods.goPostJob(done);
 		})
 		test.it('should fill in employer info form and go to next page',function (done) {
-			methods.fillInValidEmployerInfo(done)
+			methods.fillInValidEmployerInfo(done);
 		})
 		test.it('should fill in job description form and go to next page',function (done) {
-			methods.fillInValidJobDescription(done)
+			methods.fillInValidJobDescription(done);
 		})
 		test.it('should upload a photo and go to next page',function (done) {
-			methods.uploadValidPhoto(done)
+			methods.uploadValidPhoto(done);
 		})
 		test.it('should check all required filed and go to next page',function (done) {
-			methods.checkAllRequiredField(done)
+			methods.checkAllRequiredField(done);
 		})
 	})
 

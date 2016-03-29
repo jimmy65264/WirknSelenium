@@ -1,6 +1,11 @@
 {
 	"xpath":{
 		"post_button":"//*[@id=\"navbar-collapse\"]/ul[2]/li[1]/a/button",
+		"jobs_button":"//*[@id=\"navbar-collapse\"]/ul[1]/li[2]/a",
+		"jobs":{
+			"info_text":"//*[@id=\"main-wrapper\"]/div/div/div/div[1]/h2",
+			"actions":"//*[@id=\"jobs_table\"]/tbody/tr[1]/td[8]/div/button"
+		},
 		"applications":{
 			"status":{
 				"button":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button",

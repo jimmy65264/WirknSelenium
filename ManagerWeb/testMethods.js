@@ -99,9 +99,11 @@ function testMethods () {
 		testMsg('Log In with empty password');
 		driver.wait(until.elementLocated(By.name('commit')));
 		driver.findElement(By.name('email')).sendKeys('eric@tan.com');
-		driver.findElement(By.name('commit')).click();
-		expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In');
-		if (cb) cb();
+		driver.findElement(By.name('commit')).click()
+		.then(function () {
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In');
+			if (cb) cb();
+		})
 	}
 
 	testMethods.prototype.logInWithWrongPassword = function (cb) {
@@ -109,9 +111,11 @@ function testMethods () {
 		driver.wait(until.elementLocated(By.name('commit')));
 		driver.findElement(By.name('email')).sendKeys('eric@tan.com');
 		driver.findElement(By.name('password')).sendKeys('wrongpassword');
-		driver.findElement(By.name('commit')).click();
-		expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In');
-		if (cb) cb();
+		driver.findElement(By.name('commit')).click()
+		.then(function () {
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In');
+			if (cb) cb();
+		})
 	}
 
 	testMethods.prototype.validLogIn = function (cb) {
@@ -119,9 +123,11 @@ function testMethods () {
 		driver.wait(until.elementLocated(By.name('commit')));
 		driver.findElement(By.name('email')).sendKeys('eric@tan.com');
 		driver.findElement(By.name('password')).sendKeys('password');
-		driver.findElement(By.name('commit')).click();
-		expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
-		if (cb) cb();
+		driver.findElement(By.name('commit')).click()
+		.then(function () {
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
+			if (cb) cb();
+		})
 	}
 
 	testMethods.prototype.changeAppStatus = function (status,cb) {
@@ -225,13 +231,38 @@ function testMethods () {
 		})
 	}
 
+	testMethods.prototype.goViewJobs = function (cb) {
+		testWaitForXpath(xpath.jobs_button);
+		driver.findElement(By.xpath(xpath.jobs_button)).click()
+		.then(function () {
+			sleep.sleep(5);
+			testWaitForXpath(xpath.jobs.info_text);
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs')
+			if (cb) cb();
+		})
+	}
+
+	testMethods.prototype.editJob = function (cb) {
+		testWaitForXpath(xpath.jobs.actions);
+		driver.findElement(By.xpath(xpath.jobs.actions)).click()
+		.then(function () {
+			robot.keyTap('down');
+			robot.keyTap('enter');
+			testWaitForXpath(xpath.post_job.employer_info.name);
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | Edit Job')
+			if (cb) cb();
+		})
+	}
+
 	testMethods.prototype.goPostJob = function (cb) {
 		testMsg('Go Post Job page');
 		testWaitForXpath(xpath.post_button)//post button
 		driver.findElement(By.xpath(xpath.post_button)).click()//post button
-		testWaitForXpath(xpath.post_job.employer_info.name);
-		expect(driver.getTitle()).to.eventually.equal('Wirkn | New Job');
-		if (cb) cb();
+		.then(function () {
+			testWaitForXpath(xpath.post_job.employer_info.name);
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | New Job');
+			if (cb) cb();
+		})
 	}
 
 	testMethods.prototype.fillInValidEmployerInfo = function (cb) {
@@ -242,11 +273,15 @@ function testMethods () {
 		driver.findElement(By.xpath(xpath.post_job.employer_info.city)).sendKeys('Test City');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.province)).sendKeys('Test Province');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.zip)).sendKeys('Test Zip')
-		testWaitForXpath(xpath.post_job.employer_info.next);
-		driver.findElement(By.xpath(xpath.post_job.employer_info.next)).click();
-		testWaitForXpath(xpath.post_job.job_description.info_text);
-		expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Title or Position');
-		if (cb)  cb();
+		.then(function () {
+			testWaitForXpath(xpath.post_job.employer_info.next);
+			driver.findElement(By.xpath(xpath.post_job.employer_info.next)).click()
+			.then(function () {
+				testWaitForXpath(xpath.post_job.job_description.info_text);
+				expect(driver.findElement(By.xpath(xpath.post_job.job_description.info_text)).getAttribute('innerText')).to.eventually.equal('Title or Position');
+				if (cb)  cb();
+			})
+		})
 	}
 
 	testMethods.prototype.fillInValidJobDescription = function (cb) {
@@ -299,13 +334,14 @@ function testMethods () {
 		driver.findElement(By.xpath(xpath.post_job.required_fields.number)).click();
 		driver.findElement(By.xpath(xpath.post_job.required_fields.work_history)).click();
 		driver.findElement(By.xpath(xpath.post_job.required_fields.availabilities)).click();
-		driver.findElement(By.xpath(xpath.post_job.required_fields.certifications)).click();
-		testWaitForXpath(xpath.post_job.required_fields.submit);
-		driver.findElement(By.xpath(xpath.post_job.required_fields.submit)).click();
-		sleep.sleep(5);
-		testWaitForXpath('//*[@id="main-wrapper"]/div/div/div/div[1]',4000);
-		expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs');
-		if (cb) cb();
+		driver.findElement(By.xpath(xpath.post_job.required_fields.certifications)).click()
+		.then(function () {
+			testWaitForXpath(xpath.post_job.required_fields.submit);
+			driver.findElement(By.xpath(xpath.post_job.required_fields.submit)).click();
+			testWaitForXpath('//*[@id="main-wrapper"]/div/div/div/div[1]',4000);
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs');
+			if (cb) cb();
+		})
 	}
 }
 
