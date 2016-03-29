@@ -1,6 +1,24 @@
 {
 	"xpath":{
 		"post_button":"//*[@id=\"navbar-collapse\"]/ul[2]/li[1]/a/button",
+		"applications":{
+			"status":{
+				"button":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button",
+				"text":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button/span[1]"
+			},
+			"dates":[
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[2]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[3]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[4]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[5]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[6]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[7]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[8]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[9]/td[6]/div[2]",
+				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[10]/td[6]/div[2]"
+			]
+		},
 		"post_job":{
 			"employer_info":{
 				"name":"//*[@id=\"business_name\"]",
