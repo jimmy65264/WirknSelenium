@@ -2,14 +2,41 @@
 	"xpath":{
 		"post_button":"//*[@id=\"navbar-collapse\"]/ul[2]/li[1]/a/button",
 		"jobs_button":"//*[@id=\"navbar-collapse\"]/ul[1]/li[2]/a",
+		"applications_button":"//*[@id=\"navbar-collapse\"]/ul[1]/li[1]/a",
+		"application_button":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[2]",
 		"jobs":{
 			"info_text":"//*[@id=\"main-wrapper\"]/div/div/div/div[1]/h2",
 			"actions":"//*[@id=\"jobs_table\"]/tbody/tr[1]/td[8]/div/button"
 		},
+		"application":{
+			"applicant_name":"//*[@id=\"main-wrapper\"]/div/div[1]/div[1]/div[1]/div[3]/h1",
+			"status":{
+				"button":"//*[@id=\"status-button\"]/button",
+				"text":"//*[@id=\"statusbutton\"]",
+				"first_option":"//*[@id=\"status-button\"]/ul/li[1]/a"
+			},
+			"note":{
+				"box":"//*[@id=\"manager_notes\"]",
+				"send":"//*[@id=\"save-note-button\"]"
+			}
+		},
 		"applications":{
+			"info_text":"//*[@id=\"main-wrapper\"]/div/div/div/div[1]/h2",
+			"image":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[2]/div[1]/a/img",
+			"red_dot":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[2]/div[1]/span",
 			"status":{
 				"button":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button",
-				"text":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button/span[1]"
+				"text":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/button/span[1]",
+				"first_option":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/ul/li[1]/a"
+			},
+			"actions":{
+				"button":"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[4]/div/div[2]/button",
+				"share_application":{
+					"info_text":"//*[@id=\"add-manager-modal\"]/div/div/div[1]/h4",
+					"name":"//*[@id=\"firstname\"]",
+					"email":"//*[@id=\"email\"]",
+					"send":"//*[@id=\"share\"]/input[3]"
+				}
 			},
 			"dates":[
 				"//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[6]/div[2]",

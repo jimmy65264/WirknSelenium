@@ -35,6 +35,15 @@ function testWaitForXpath (path,ext) {
 	}
 }
 
+function testWaitForText(path,text) {
+	testWaitForXpath(path);
+	driver.findElement(By.xpath(path))
+	.then(function (element) {
+	driver.wait(until.elementTextIs(element, text));
+	})
+}
+
+
 function repeatcall (fn,time) {
 	for(var i = 0; i < time; i++){
 		fn();
@@ -89,6 +98,7 @@ function testMethods () {
 		.then(function () {
 		robot.moveMouse(300,1000);
 		robot.mouseClick();
+		robot.keyTap('f',['command','control']);
 		})
 		driver.wait(until.elementLocated(By.name('commit')));
 		expect(driver.getTitle()).to.eventually.equal('Wirkn | Log In')
@@ -130,12 +140,21 @@ function testMethods () {
 		})
 	}
 
-	testMethods.prototype.changeAppStatus = function (status,cb) {
-		testMsg('change application status')
-		testWaitForXpath(xpath.applications.status.button);
-		driver.findElement(By.xpath(xpath.applications.status.button)).click()
+	testMethods.prototype.changeAppStatus = function (status,page,cb) {
+		if(page === 'list') {
+			var button = xpath.applications.status.button;
+			var text = xpath.applications.status.text;
+			var first_option = xpath.applications.status.first_option;
+		} else {
+			var button = xpath.application.status.button;
+			var text = xpath.application.status.text;
+			var first_option = xpath.application.status.first_option;
+		}
+		testWaitForXpath(button);
+		driver.findElement(By.xpath(button)).click()
 		.then(function () {
-			testWaitForXpath('//*[@id=\"main-wrapper\"]/div/div/div/div[2]/div[4]/table/tbody/tr[1]/td[5]/div/ul/li[1]/a');
+			testWaitForXpath(first_option);
+
 			var tapDown = function () {
 				robot.keyTap('down');
 			}
@@ -143,69 +162,69 @@ function testMethods () {
 				case 'active':
 				repeatcall(tapDown,1)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('ACTIVE');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('ACTIVE');
 				if (cb) cb();
 				break;
 
 				case 'called':
 				repeatcall(tapDown,2)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('CALLED');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('CALLED');
 				if (cb) cb();
 				break;
 				
 				case 'emailed':
 				repeatcall(tapDown,3)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('EMAILED');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('EMAILED');
 				if (cb) cb();
 				break;
 				
 				case 'interview 1':
 				repeatcall(tapDown,4)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 1');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 1');
 				if (cb) cb();
 				break;
 				case 'interview 2':
 				repeatcall(tapDown,5)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 2');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 2');
 				if (cb) cb();
 				break;
 				
 				case 'interview 3':
 				repeatcall(tapDown,6)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 3');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('INTERVIEW 3');
 				if (cb) cb();
 				break;
 				
 				case 'pre screened':
 				repeatcall(tapDown,7)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('PRE SCREENED');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('PRE SCREENED');
 				if (cb) cb();
 				break;
 				
 				case 'wrong fit':
 				repeatcall(tapDown,8)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('WRONG FIT');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('WRONG FIT');
 				if (cb) cb();
 				break;
 				
 				case 'offered':
 				repeatcall(tapDown,9)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('OFFERED');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('OFFERED');
 				if (cb) cb();
 				break;
 				
 				case 'hired':
 				repeatcall(tapDown,10)
 				robot.keyTap('enter');
-				expect(driver.findElement(By.xpath(xpath.applications.status.text)).getAttribute('innerText')).to.eventually.equal('HIRED');
+				expect(driver.findElement(By.xpath(text)).getAttribute('innerText')).to.eventually.equal('HIRED');
 				if (cb) cb();
 				break;
 			}
@@ -231,13 +250,66 @@ function testMethods () {
 		})
 	}
 
+	testMethods.prototype.markApplicationUnreadOrRead = function (cb) {
+		if (driver.isElementPresent(webdriver.By.xpath(xpath.applications.red_dot))) {
+			testWaitForXpath(xpath.applications.actions.button);
+			driver.findElement(By.xpath(xpath.applications.actions.button)).click()
+			.then(function () {
+				repeatcall(function () {
+				robot.keyTap('down');
+				},4);
+				robot.keyTap('enter');
+				testWaitForXpath(xpath.applications.image);
+				expect(driver.isElementPresent(webdriver.By.xpath(xpath.applications.red_dot))).to.eventually.equal(false);
+				if (cb) cb();
+			})
+		} else {
+			testWaitForXpath(xpath.applications.actions.button);
+			driver.findElement(By.xpath(xpath.applications.actions.button)).click()
+			.then(function () {
+				repeatcall(function () {
+				robot.keyTap('down');
+				},4);
+				robot.keyTap('enter');
+				testWaitForXpath(xpath.applications.red_dot);
+				expect(driver.isElementPresent(webdriver.By.xpath(xpath.applications.red_dot))).to.eventually.equal(true);
+				if (cb) cb();
+			})
+		}
+	}
+
+	testMethods.prototype.goApplicationDetail = function (cb) {
+		testWaitForXpath(xpath.application_button);
+		driver.findElement(By.xpath(xpath.application_button)).click()
+		.then(function () {
+			testWaitForXpath(xpath.application.applicant_name);
+			driver.findElement(By.xpath(xpath.application.applicant_name)).getAttribute('innerText')
+			.then(function (name) {
+				expect(driver.getTitle()).to.eventually.equal('Wirkn | ' + name);
+				if (cb) cb();
+			})
+		})
+	}
+
 	testMethods.prototype.goViewJobs = function (cb) {
 		testWaitForXpath(xpath.jobs_button);
 		driver.findElement(By.xpath(xpath.jobs_button)).click()
 		.then(function () {
 			sleep.sleep(5);
-			testWaitForXpath(xpath.jobs.info_text);
-			expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs')
+			// testWaitForXpath(xpath.jobs.info_text);
+			testWaitForText(xpath.jobs.info_text,'Jobs');
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | My Jobs');
+			if (cb) cb();
+		})
+	}
+
+	testMethods.prototype.goViewApplications = function (cb) {
+		testWaitForXpath(xpath.applications_button);
+		driver.findElement(By.xpath(xpath.applications_button)).click()
+		.then(function () {
+			sleep.sleep(5);
+			testWaitForText(xpath.applications.info_text,'Applications')
+			expect(driver.getTitle()).to.eventually.equal('Wirkn | Applications');
 			if (cb) cb();
 		})
 	}
@@ -254,10 +326,35 @@ function testMethods () {
 		})
 	}
 
+	testMethods.prototype.goShareApplication = function (cb) {
+		testWaitForXpath(xpath.applications.actions.button);
+		driver.findElement(By.xpath(xpath.applications.actions.button)).click()
+		.then(function () {
+			repeatcall(function () {
+				robot.keyTap('down');
+			},2)
+			robot.keyTap('enter');
+			testWaitForXpath(xpath.applications.actions.share_application.info_text);
+			expect(driver.findElement(By.xpath(xpath.applications.actions.share_application.info_text)).getAttribute('innerText')).to.eventually.equal('Share Application');
+			if (cb) cb();
+		})
+	}
+
+	testMethods.prototype.shareApplication = function (address,cb) {
+		testWaitForXpath(xpath.applications.actions.share_application.send);
+		driver.findElement(By.xpath(xpath.applications.actions.share_application.name)).sendKeys('WirknQA');
+		driver.findElement(By.xpath(xpath.applications.actions.share_application.email)).sendKeys(address);
+		driver.findElement(By.xpath(xpath.applications.actions.share_application.send)).click()
+		.then(function () {
+		if (cb) cb();
+		})
+	}
+
+
 	testMethods.prototype.goPostJob = function (cb) {
 		testMsg('Go Post Job page');
-		testWaitForXpath(xpath.post_button)//post button
-		driver.findElement(By.xpath(xpath.post_button)).click()//post button
+		testWaitForXpath(xpath.post_button)
+		driver.findElement(By.xpath(xpath.post_button)).click()
 		.then(function () {
 			testWaitForXpath(xpath.post_job.employer_info.name);
 			expect(driver.getTitle()).to.eventually.equal('Wirkn | New Job');
@@ -269,7 +366,7 @@ function testMethods () {
 		testMsg('Fill in Valid EmployerInfo');
 		testWaitForXpath('//*[@id="business_name"]');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.name)).sendKeys('Test Business');
-		driver.findElement(By.xpath(xpath.post_job.employer_info.address)).sendKeys('7 Test Address');
+		driver.findElement(By.xpath(xpath.post_job.employer_info.address)).sendKeys('1 yonge street');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.city)).sendKeys('Test City');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.province)).sendKeys('Test Province');
 		driver.findElement(By.xpath(xpath.post_job.employer_info.zip)).sendKeys('Test Zip')
@@ -301,14 +398,16 @@ function testMethods () {
 	testMethods.prototype.uploadValidPhoto = function (cb) {
 		//make sure you have the picture
 		testMsg('Upload a valid photo');
+		sleep.sleep(2);
 		testWaitForXpath(xpath.post_job.photo.choose_file);
 		driver.findElement(By.xpath(xpath.post_job.photo.choose_file)).click()
 		driver.switchTo().frame(driver.findElement(By.xpath(xpath.post_job.upload_frame.frame)));
 		testWaitForXpath(xpath.post_job.upload_frame.choose_file,10000)
 		driver.findElement(By.xpath(xpath.post_job.upload_frame.choose_file)).click()
 		.then(function () {
-			robot.moveMouse(1000,300);//go to download folder
-			robot.mouseClick();//click on download
+			sleep.sleep(2);
+			// robot.moveMouse(1000,300);//go to download folder
+			// robot.mouseClick();//click on download
 			robot.typeString("bigsmall");//enter file name
 			robot.keyTap('enter');//upload
 			sleep.sleep(5);
