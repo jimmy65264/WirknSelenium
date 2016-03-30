@@ -291,6 +291,22 @@ function testMethods () {
 		})
 	}
 
+	testMethods.prototype.editApplicationNote = function (cb) {
+		testWaitForXpath(xpath.application.note.send);
+		driver.findElement(By.xpath(xpath.application.note.box)).click()
+		.then(function () {
+			repeatcall(function () {
+				robot.keyTap('delete')
+			}, 100)
+			driver.findElement(By.xpath(xpath.application.note.box)).sendKeys('some random note');
+			driver.findElement(By.xpath(xpath.application.note.send)).click()
+			.then(function () {
+				expect(driver.findElement(By.xpath(xpath.application.note.box)).getText()).to.eventually.equal('some random note');
+				if (cb) cb();
+			})
+		})
+	}
+
 	testMethods.prototype.goViewJobs = function (cb) {
 		testWaitForXpath(xpath.jobs_button);
 		driver.findElement(By.xpath(xpath.jobs_button)).click()

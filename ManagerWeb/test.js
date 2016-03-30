@@ -139,6 +139,9 @@ test.describe('Manager Web Tests',function() {
 		test.it('should change application status to hired', function (done) {
 			methods.changeAppStatus('hired','detail',done);
 		})
+		test.it('should add note to the application', function (done) {
+			methods.editApplicationNote(done)
+		})
 	})
 	
 	test.describe('Test MyJobs button on application page', function () {
