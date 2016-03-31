@@ -291,17 +291,20 @@ function testMethods () {
 		})
 	}
 
+
 	testMethods.prototype.editApplicationNote = function (cb) {
-		testWaitForXpath(xpath.application.note.send);
-		driver.findElement(By.xpath(xpath.application.note.box)).click()
-		.then(function () {
-			repeatcall(function () {
-				robot.keyTap('delete')
-			}, 100)
+		testWaitForXpath(xpath.application.note.box);
+		driver.findElement(By.xpath(xpath.application.note.box)).getText()
+		.then(function (preText) {
+			console.log(preText);
 			driver.findElement(By.xpath(xpath.application.note.box)).sendKeys('some random note');
+			testWaitForXpath(xpath.application.note.send);
 			driver.findElement(By.xpath(xpath.application.note.send)).click()
 			.then(function () {
-				expect(driver.findElement(By.xpath(xpath.application.note.box)).getText()).to.eventually.equal('some random note');
+				console.log(preText);
+				sleep.sleep(3);
+				testWaitForXpath(xpath.application.note.box);
+				expect(driver.findElement(By.xpath(xpath.application.note.box)).getText()).to.eventually.equal(preText + 'some random note');
 				if (cb) cb();
 			})
 		})
