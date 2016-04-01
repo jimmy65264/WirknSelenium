@@ -1,8 +1,7 @@
 var	test = require('selenium-webdriver/testing'),
 	xpath = require("./xpath.json").xpath;
 	testMethods = require("./testMethods").testMethods;
-	driver = require("./testMethods").driver;
-
+	driver = require("../driver").driver;
 
 var methods = new testMethods();
 
@@ -11,15 +10,19 @@ test.describe('Manager Web Tests',function() {
 	before(function (done) {
 		driver.getWindowHandle();
 		driver.manage().window()//.setSize(1680,1050);
-		.setSize(2560,1440);
+		.setSize(2560,1440)
+		.then(function () {
+			robot.moveMouse(300,1000);
+			robot.mouseClick();
+			robot.keyTap('f',['command','control']);
+		})
 		done();
 	})
 	after(function (done) {
-			//driver.quit()
-			// .then(function () {
-			// 	done();
-			// })
-	done();
+		driver.quit()
+		.then(function () {
+			done();
+		})
 	})
 	
 	test.describe('Test going to home page', function () {

@@ -12,6 +12,6 @@
 		"sleep":"3.0.1"
 	},
 	"scripts": {
-    "test": "mocha ./ManagerWeb/test.js "
+    "test": "mocha ./CandidateWeb/test.js"
   }
 }
